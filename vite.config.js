@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite';
 
-// ຂັ້ນຕອນນີ້ (ເຟດ 2 ຮອບ 1): ໃຫ້ Vite ຮັບໃຊ້ໄຟລ໌ legacy/index.html ຊື່ໆ ໂດຍບໍ່ແກ້ໄຂ
-// logic ພາຍໃນຫຍັງເລີຍ — ຈຸດປະສົງແມ່ນພິສູດວ່າ build tool ໃຊ້ການໄດ້ຈິງ ໂດຍທີ່ແອັບຍັງເຮັດວຽກ
-// ຄືເກົ່າ 100% ກ່ອນ, ແລ້ວຈຶ່ງແຍກ index.html ອອກເປັນໂມດູນ (src/auth, src/pos, ...) ເທື່ອລະໜ່ວຍ
-// ໃນຮອບຕໍ່ໆໄປ, ພ້ອມທົດສອບທຸກຮອບ.
+// v0.0.1 SaaS-fork ONLY (2026-09-21): ທິດທາງໂປເຈັກປ່ຽນ -- ອີງໂຄດ POS (souliya8470/sykhai-pos)
+// + ໜ້າຮ້ານອອນລາຍ ແທນ Marketing Studio (ເຫດຜົນ: ລູກຄ້າສົນໃຈໜ້າຮ້ານອອນລາຍຫຼາຍກວ່າ). ວຽກເກົ່າອີງ
+// Marketing Studio (legacy-marketing-studio/) ຢຸດພັກໄວ້ຊົ່ວຄາວ -- ຍັງເກັບໄວ້ໃນ git history.
+// ຊົ່ວຄາວນີ້ຍັງໃຫ້ Vite ຮັບໃຊ້ໄຟລ໌ Marketing Studio (ເກົ່າ) ຢູ່ ເພື່ອ `npm run dev` ຍັງໃຊ້ການໄດ້
+// ບໍ່ຜິດພາດ ຂະນະລໍຖ້າໄຟລ໌ຕົ້ນສະບັບ POS/ໜ້າຮ້ານ ເພື່ອວາງໂຄງສ້າງໃໝ່ໃຫ້ຖືກຕ້ອງ.
 export default defineConfig({
-  root: 'legacy',
+  root: 'legacy-marketing-studio',
   build: {
     outDir: '../dist',
     emptyOutDir: true,

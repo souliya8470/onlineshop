@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ຮ້ານຕຸກຕາສີໄຄ - ລິ້ງລວມ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!--
+  APP_VERSION: 1.09 (ລິ້ງລວມຮ້ານ - link-in-bio)
+  APP_VERSION_PREV: 1.08
+  APP_VERSION_PREV_OLDER: 1.07
+  ປະຫວັດ:
+  - v1.00 (2026-09-12): ສ້າງໃໝ່. ໜ້າ static ລ້ວນໆ (ບໍ່ຕ້ອງມີ Supabase) — ແກ້ຄ່າຕ່າງໆໄດ້ຢູ່ CONFIG
+    ດ້ານລຸ່ມນີ້ໂດຍກົງ (ຮູບ, ຊື່, ເບີ WhatsApp, ລິ້ງ Facebook/TikTok/ຮ້ານອອນລາຍ).
+  - v1.01 (2026-09-12): Tar ຂໍໃຫ້ຕັ້ງຄ່າໄດ້ເອງແທນການແກ້ໄຟລ໌ — ດຶງຄ່າຈາກຕາຕະລາງ
+    link_page_settings (Supabase) ແທນ CONFIG ຄົງທີ່. ຕັ້ງຄ່າຈິງໆຢູ່ Marketing Studio
+    ("⚙️ ຕັ້ງຄ່າລິ້ງລວມ"). CONFIG ໃນໄຟລ໌ນີ້ກາຍເປັນຄ່າສຳຮອງ (fallback) ຖ້າດຶງບໍ່ໄດ້ເທົ່ານັ້ນ.
+  - v1.02 (2026-09-12): 3 ການແກ້ໄຂ — (1) ຈັດລຳດັບໃໝ່: WhatsApp ຂຶ້ນເປັນປຸ່ມທຳອິດ (ອອນລາຍ/
+    Facebook/TikTok ຕາມຫຼັງ), (2) "Facebook ຕູ້" ປ່ຽນປ້າຍເປັນ "Facebook ຫຼັກ", (3) ແກ້ຮູບໂປຣໄຟລ໌
+    ບໍ່ຂຶ້ນ — ຮູບທີ່ຝັງເປັນ base64 ຕົງໆຜ່ານ SQL ຖືກເສຍຫາຍ 1 ຕົວອັກສອນລະຫວ່າງທາງ (ຄວາມສ່ຽງປົກກະຕິ
+    ຂອງການສົ່ງຂໍ້ຄວາມຍາວຫຼາຍພັນຕົວອັກສອນຜ່ານຫຼາຍຊັ້ນເຄື່ອງມື) — ຄ່າຖືກລ້າງອອກແລ້ວ, ອັບໂຫລດຮູບໃໝ່
+    ຜ່ານໜ້າ "⚙️ ຕັ້ງຄ່າລິ້ງລວມ" ໂດຍກົງແທນ (Storage upload ຈິງ, ບໍ່ຝັງ base64 ອີກຕໍ່ໄປ) ຈຶ່ງໜ້າເຊື່ອຖືກວ່າ.
+    ນອກນັ້ນ profileImg ບໍ່ຕັ້ງ src="" ຫວ່າງອີກຕໍ່ໄປ (ບາງ browser ຈະໂຫຼດໜ້າປັດຈຸບັນເປັນຮູບຊ້ຳຖ້າ
+    src ຫວ່າງ) — ເລີ່ມເຊື່ອງໄວ້ (display:none) ຈົນກວ່າຈະມີ URL ຮູບແທ້.
+  - v1.03 (2026-09-12): Tar ບອກວ່າໜ້າຕາຄ້າຍໜ້າຮ້ານຄູ່ແຂ່ງທີ່ໃຊ້ອ້າງອີງຕອນທຳອິດເກີນໄປ (gradient
+    ຊົມພູ-ສົ້ມ-ເຫຼືອງແບບດຽວກັນ) — ອອກແບບສີໃໝ່ໝົດອີງໃສ່ໂຕນຮູບປົກ (ຄີມ+ບົວອອນ+ໄວນ໌ເລິກ) ແທນທີ່ຈະ
+    ຄັດລອກສີເດີມ: ພື້ນຫຼັງ radial glow ບົວອອນອ່ອນໆເທິງພື້ນຄີມ (ແທນ gradient ຂວາງໜ້າຈໍ), ປຸ່ມຫຼັກ
+    ປ່ຽນຈາກຊົມພູສົດເປັນໄວນ໌ເລິກ (#6E2A3D), ເພີ່ມເສັ້ນຄັ່ນສີຄຳນ້ອຍໆໃຕ້ຊື່ຮ້ານເປັນຈຸດສັງເກດສະເພາະ.
+    ນອກນັ້ນຍັງຍ້າຍ WhatsApp ຈາກອັນດັບ 1 ມາເປັນອັນດັບ 2 (ຢູ່ໃຕ້ປຸ່ມສັ່ງຊື້ອອນລາຍ) ຕາມທີ່ຂໍ.
+  - v1.04 (2026-09-13): ພົບວ່າ TikTok (ແລະ Instagram/Facebook) in-app browser ບລັອກການເປີດ
+    ລິ້ງ wa.me ໂດຍກົງ (ຂຶ້ນໜ້າ "ບໍ່ສາມາດເປີດໄດ້" ຂອງແອັບເອງ) — ນີ້ແມ່ນຂໍ້ຈຳກັດຂອງແອັບເຫຼົ່ານັ້ນເອງ
+    ບໍ່ແມ່ນບັນຫາເວັບ. ເພີ່ມ isBlockedInAppBrowser() ກວດ userAgent, ຖ້າກົງ ຈະປ່ຽນປຸ່ມ WhatsApp
+    ໃຫ້ຄັດລອກເບີໃສ່ clipboard ທັນທີແທນທີ່ຈະລອງເປີດ wa.me (ຫຼີກລ່ຽງໜ້າ block ໄປເລີຍ, ບໍ່ຕ້ອງລໍໃຫ້
+    ລູກຄ້າຕິດຂັດກ່ອນຈຶ່ງອ່ານຄຳແນະນຳ).
+  - v1.05 (2026-09-13): ພົບວ່າ TikTok ບລັອກ facebook.com/instagram.com ໂດຍກົງນຳ (ນະໂຍບາຍ
+    TikTok ຕໍ່ Meta ໂດຍລວມ, ບໍ່ແມ່ນສະເພາະ wa.me) — ຂະຫຍາຍ linkRow() ໃຫ້ກວດ Meta URL ອັດຕະໂນມັດ
+    ແລ້ວສະຫຼັບເປັນຄັດລອກລິ້ງແທນ (ຄືກົນໄກດຽວກັນກັບ WhatsApp) ໃຫ້ Facebook ຮ້ານ/ຫຼັກ ນຳ.
+  - v1.06 (2026-09-13): (1) "Facebook ຫຼັກ" ປ່ຽນປ້າຍເປັນ "Facebook ສ່ວນຕົວ", (2) ເພີ່ມປຸ່ມ
+    "📦 ກວດອໍເດີ / ຕິດຕາມພັດສະດຸ" ຢູ່ໃຕ້ປຸ່ມສັ່ງຊື້ອອນລາຍ ໄປຫາ orders.html (ໜ້າໃໝ່ — ລູກຄ້າໃສ່
+    ເບີໂທເບິ່ງປະຫວັດ+ສະຖານະການຈັດສົ່ງແບບ real-time).
+  - v1.07 (2026-09-13): ເພີ່ມປຸ່ມ "💬 ແຊັດກັບຮ້ານ" ໄປຫາ chat.html (ໜ້າໃໝ່ — ບໍ່ມີ OTP ຕາມທີ່ Tar
+    ຂໍ, ໃຊ້ຊື່+ເບີໂທຢ່າງດຽວ, ຂຽນກົງເຂົ້າ chat_customers/chat_conversations/chat_messages ດຽວກັນ
+    ກັບ Marketing Studio ໜ້າ "ແຊັດແອັບລູກຄ້າ").
+  - v1.08 (2026-09-13): ລຶບປຸ່ມ "📦 ກວດອໍເດີ" ແລະ "💬 ແຊັດກັບຮ້ານ" ອອກຈາກໜ້ານີ້ — ຊ້ຳກັບໄອຄອນທີ່
+    ເພີ່ມໄວ້ໃນ header ຂອງ store.html/checkout.html ແລ້ວ (v1.02/v1.05 ຂອງ 2 ໄຟລ໌ນັ້ນ), ບໍ່ຈຳເປັນ
+    ໃຫ້ຊ້ຳຢູ່ນີ້ອີກ ຍ້ອນລູກຄ້າເຂົ້າຮອດ store.html ຢູ່ແລ້ວຜ່ານປຸ່ມ "ສັ່ງຊື້ຜ່ານເວັບໄຊ".
+  - v1.09 (2026-09-14): ແກ້ຄຳສະກົດ "ອອເດີ" → "ອໍເດີ" ທຸກບ່ອນໃນໜ້ານີ້.
+-->
+<style>
+  :root{
+    --cream:#FAF4ED;
+    --blush:#EAD0C8;
+    --wine:#6E2A3D;
+    --wine-deep:#4A1B29;
+    --gold:#B6905F;
+    --text:#3A2530;
+    --muted:#8B7368;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Noto Sans Lao','Segoe UI',sans-serif; color:var(--text);
+    background:
+      radial-gradient(ellipse 700px 500px at 50% 0%, var(--blush) 0%, transparent 60%),
+      var(--cream);
+    min-height:100vh; padding-bottom:30px;
+  }
+  .wrap{max-width:480px; margin:0 auto;}
+  .cover{width:100%; aspect-ratio:16/8; object-fit:cover; display:block; background:#ddd;}
+  .cover-placeholder{
+    width:100%; aspect-ratio:16/8; background:linear-gradient(135deg,var(--blush),var(--cream));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px;
+  }
+  .profile-row{text-align:center; margin-top:-46px; padding:0 20px;}
+  .profile-pic{
+    width:92px; height:92px; border-radius:50%; object-fit:cover; border:4px solid var(--cream);
+    box-shadow:0 2px 12px rgba(74,27,41,0.25); background:#eee;
+  }
+  .shop-name{font-size:26px; font-weight:800; margin:12px 0 6px; color:var(--wine-deep); letter-spacing:0.3px;}
+  .name-rule{width:36px; height:2px; background:var(--gold); margin:0 auto 10px; border-radius:2px;}
+  .tagline{font-size:14px; color:var(--muted); margin:0 0 18px;}
+
+  .promo-card{
+    margin:0 18px 16px; background:#fff; border:1px solid var(--blush); border-radius:14px; padding:14px 18px;
+    text-align:center;
+  }
+  .promo-card .line1{font-size:14px; font-weight:600; margin-bottom:4px; color:var(--text);}
+  .promo-card .code{font-size:15px; font-weight:800; letter-spacing:2px; color:var(--wine);}
+
+  .btn-list{padding:0 18px; display:flex; flex-direction:column; gap:12px;}
+  .link-btn{
+    display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:14px;
+    text-decoration:none; color:var(--text); font-weight:700; font-size:15px;
+    background:#fff; box-shadow:0 1px 6px rgba(74,27,41,0.08);
+    transition:transform 0.1s;
+  }
+  .link-btn:active{transform:scale(0.98);}
+  .link-btn.primary{
+    background:var(--wine); color:#fff; flex-direction:column;
+    text-align:center; padding:18px; gap:4px;
+    box-shadow:0 4px 14px rgba(110,42,61,0.35);
+  }
+  .link-btn.primary .title{font-size:17px; font-weight:800; display:flex; align-items:center; gap:8px;}
+  .link-btn.primary .sub{font-size:12px; font-weight:500; opacity:0.85;}
+  .icon-circle{
+    width:36px; height:36px; border-radius:50%; background:var(--wine-deep); display:flex; align-items:center;
+    justify-content:center; flex-shrink:0;
+  }
+  .icon-circle.wa{background:#25D366;}
+  .icon-circle svg{width:19px; height:19px;}
+
+  .fallback-wa{
+    margin:16px 18px 0; text-align:center; font-size:12px; color:var(--muted); display:flex;
+    align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;
+  }
+  .fallback-wa a{
+    background:#fff; border:1px solid var(--blush); border-radius:20px; padding:8px 16px; font-weight:700; color:var(--text);
+    text-decoration:none; font-size:12px;
+  }
+  footer{text-align:center; font-size:12px; color:var(--muted); margin-top:24px;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <img class="cover" id="coverImg" src="" alt="" style="display:none;">
+  <div class="cover-placeholder" id="coverPlaceholder"></div>
+
+  <div class="profile-row">
+    <img class="profile-pic" id="profileImg" alt="" style="display:none;">
+    <div class="shop-name" id="shopNameEl"></div>
+    <div class="name-rule"></div>
+    <div class="tagline" id="taglineEl"></div>
+  </div>
+
+  <div class="promo-card" id="promoCard" style="display:none;">
+    <div class="line1" id="promoLine1"></div>
+    <div class="code" id="promoCode"></div>
+  </div>
+
+  <div class="btn-list" id="btnList"></div>
+
+  <div class="fallback-wa" id="fallbackWa" style="display:none;"></div>
+
+  <footer id="footerEl"></footer>
+</div>
+
+<script>
+const SUPABASE_URL = "https://mjbhgtjnxcflqzmcfnyv.supabase.co"; // v0.0.1 SaaS-fork ONLY (2026-09-21): swapped from real Sykhai Shop production project to isolated dev/test project
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qYmhndGpueGNmbHF6bWNmbnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NzgxNzUsImV4cCI6MjEwNTU1NDE3NX0.JUl2LxbzHCOOISIL9YJNjgJT23LN0jLmQhn4vojXtEA";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  global: { fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }) }
+});
+
+// ຄ່າສຳຮອງ - ໃຊ້ຖ້າດຶງຈາກ Supabase ບໍ່ໄດ້ (ເນັດຂາດ/ຕາຕະລາງວ່າງ), ບໍ່ແມ່ນຄ່າຫຼັກອີກຕໍ່ໄປ
+// ຄ່າຫຼັກແກ້ໄດ້ເອງຢູ່ Marketing Studio ("⚙️ ຕັ້ງຄ່າລິ້ງລວມ") ບໍ່ຕ້ອງແກ້ໄຟລ໌ນີ້ອີກ
+const FALLBACK_CONFIG = {
+  shopName: "ຮ້ານຕຸກຕາສີໄຄ", tagline: "ເຄື່ອງສຳອາງ · ອາຫານເສີມ · ຄວາມງາມ",
+  coverImage: "", profileImage: "",
+  promoLine1: "", promoCode: "",
+  storeUrl: "store.html", whatsappNumber: "", whatsappMessage: "ສະບາຍດີ ຢາກສອບຖາມກ່ຽວກັບສິນຄ້າ",
+  facebookShopUrl: "", tiktokShopUrl: "", facebookPersonalUrl: "", tiktokPersonalUrl: "",
+  footerText: "© 2026 ຮ້ານຕຸກຕາສີໄຄ"
+};
+let CONFIG = FALLBACK_CONFIG;
+
+function waLink(number, message){
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}
+// TikTok/Instagram/Facebook in-app browsers block opening wa.me links directly (shows their
+// own "cannot open this page" screen) — detect these and skip straight to copy-the-number
+// instead of making the customer hit that dead end first.
+function isBlockedInAppBrowser(){
+  const ua = navigator.userAgent || '';
+  return /musical_ly|BytedanceWebview|TikTok|Instagram|FBAN|FBAV/i.test(ua);
+}
+function detectAppName(){
+  const ua = navigator.userAgent || '';
+  if(/musical_ly|BytedanceWebview|TikTok/i.test(ua)) return 'TikTok';
+  if(/Instagram/i.test(ua)) return 'Instagram';
+  if(/FBAN|FBAV/i.test(ua)) return 'Facebook';
+  return 'ແອັບນີ້';
+}
+function copyWaNumber(number){
+  const text = '+' + number;
+  const done = () => {
+    const btn = document.getElementById('waCopyBtn');
+    if(btn) btn.querySelector('span').textContent = '✅ ຄັດລອກເບີແລ້ວ! ເປີດ WhatsApp ດ້ວຍຕົນເອງ';
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, done){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+const ICONS = {
+  fb: `<svg viewBox="0 0 24 24" fill="#fff"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>`,
+  tiktok: `<svg viewBox="0 0 24 24" fill="#fff"><path d="M16.6 5.8c-.9-.9-1.4-2.1-1.4-3.4h-3v13.2c0 1.5-1.2 2.7-2.7 2.7s-2.7-1.2-2.7-2.7 1.2-2.7 2.7-2.7c.3 0 .6 0 .8.1v-3c-.3 0-.5-.1-.8-.1-3.2 0-5.7 2.6-5.7 5.7s2.6 5.7 5.7 5.7 5.7-2.6 5.7-5.7V9.1c1.2.9 2.7 1.4 4.3 1.4v-3c-1 0-1.9-.3-2.6-.9-.1 0-.2-.1-.3-.2z"/></svg>`,
+  wa: `<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .9.9-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8.9-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.2.2-.4.1-.1 0-.3 0-.4C10.3 9.6 9.9 8.6 9.7 8.2c-.2-.4-.3-.3-.5-.3h-.4c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.2 1.6 2.4 3.8 3.4.5.2.9.4 1.3.5.5.2 1 .1 1.3-.1.4-.2 1.2-.5 1.4-1 .2-.5.2-.9.1-1-.1-.1-.2-.2-.4-.2z"/></svg>`
+};
+
+async function loadConfigAndRender(){
+  try{
+    const { data, error } = await sb.from('link_page_settings').select('*').eq('id', 1).limit(1);
+    if(error) throw error;
+    if(data && data[0]){
+      const r = data[0];
+      CONFIG = {
+        shopName: r.shop_name || FALLBACK_CONFIG.shopName,
+        tagline: r.tagline || "",
+        coverImage: r.cover_image_url || "",
+        profileImage: r.profile_image_url || "",
+        promoLine1: r.promo_line1 || "",
+        promoCode: r.promo_code || "",
+        storeUrl: r.store_url || FALLBACK_CONFIG.storeUrl,
+        whatsappNumber: r.whatsapp_number || "",
+        whatsappMessage: r.whatsapp_message || FALLBACK_CONFIG.whatsappMessage,
+        facebookShopUrl: r.facebook_shop_url || "",
+        tiktokShopUrl: r.tiktok_shop_url || "",
+        facebookPersonalUrl: r.facebook_personal_url || "",
+        tiktokPersonalUrl: r.tiktok_personal_url || "",
+        footerText: r.footer_text || FALLBACK_CONFIG.footerText
+      };
+    }
+  }catch(err){
+    console.error('ດຶງຄ່າຕັ້ງບໍ່ສຳເລັດ, ໃຊ້ຄ່າສຳຮອງແທນ:', err);
+  }
+  render();
+}
+
+function render(){
+  document.getElementById('shopNameEl').textContent = CONFIG.shopName;
+  document.getElementById('taglineEl').textContent = CONFIG.tagline;
+  document.getElementById('footerEl').textContent = CONFIG.footerText;
+
+  if(CONFIG.coverImage){
+    document.getElementById('coverImg').src = CONFIG.coverImage;
+    document.getElementById('coverImg').style.display = 'block';
+    document.getElementById('coverPlaceholder').style.display = 'none';
+  }
+  if(CONFIG.profileImage){
+    document.getElementById('profileImg').src = CONFIG.profileImage;
+    document.getElementById('profileImg').style.display = 'block';
+  }
+
+  if(CONFIG.promoLine1){
+    document.getElementById('promoCard').style.display = 'block';
+    document.getElementById('promoLine1').textContent = CONFIG.promoLine1;
+    document.getElementById('promoCode').textContent = CONFIG.promoCode;
+  }
+
+  const list = document.getElementById('btnList');
+
+  if(CONFIG.storeUrl){
+    list.innerHTML += `
+      <a class="link-btn primary" href="${CONFIG.storeUrl}">
+        <div class="title">🛍️ ສັ່ງຊື້ຜ່ານເວັບໄຊ</div>
+        <div class="sub">ເລືອກ ແລະ ສັ່ງຊື້ສິນຄ້າໄດ້ 24 ຊົ່ວໂມງ</div>
+      </a>`;
+  }
+  if(CONFIG.whatsappNumber){
+    if(isBlockedInAppBrowser()){
+      list.innerHTML += `
+        <a class="link-btn" href="javascript:void(0)" onclick="copyWaNumber('${CONFIG.whatsappNumber}')" id="waCopyBtn">
+          <div class="icon-circle wa">${ICONS.wa}</div>
+          <span>ຕິດຕໍ່ຊື້ຂາຍ & ໂຄສະນາ (WhatsApp) — ກົດເພື່ອຄັດລອກເບີ</span>
+        </a>`;
+      const fb = document.getElementById('fallbackWa');
+      fb.style.display = 'flex';
+      fb.innerHTML = `ກົດປຸ່ມເທິງເພື່ອຄັດລອກເບີ <b>+${CONFIG.whatsappNumber}</b> ແລ້ວເປີດ WhatsApp ດ້ວຍຕົນເອງ (${detectAppName()} ບໍ່ໃຫ້ເປີດລິ້ງ WhatsApp ໂດຍກົງ)`;
+    } else {
+      list.innerHTML += linkRow(ICONS.wa, '#25D366', 'ຕິດຕໍ່ຊື້ຂາຍ & ໂຄສະນາ (WhatsApp)', waLink(CONFIG.whatsappNumber, CONFIG.whatsappMessage));
+
+      const fb = document.getElementById('fallbackWa');
+      fb.style.display = 'flex';
+      fb.innerHTML = `ທັກແລ້ວບໍ່ເປີດ? ທັກ WhatsApp ເບີ <b>+${CONFIG.whatsappNumber}</b> <a href="${waLink(CONFIG.whatsappNumber, CONFIG.whatsappMessage)}">ກັອບປີ້ເບີ</a>`;
+    }
+  }
+  if(CONFIG.facebookShopUrl){
+    list.innerHTML += linkRow(ICONS.fb, '#1877F2', 'Facebook ຮ້ານ', CONFIG.facebookShopUrl);
+  }
+  if(CONFIG.tiktokShopUrl){
+    list.innerHTML += linkRow(ICONS.tiktok, '#000000', 'TikTok ຮ້ານ', CONFIG.tiktokShopUrl);
+  }
+  if(CONFIG.facebookPersonalUrl){
+    list.innerHTML += linkRow(ICONS.fb, '#1877F2', 'Facebook ສ່ວນຕົວ', CONFIG.facebookPersonalUrl);
+  }
+  if(CONFIG.tiktokPersonalUrl){
+    list.innerHTML += linkRow(ICONS.tiktok, '#000000', 'TikTok ຕູ້', CONFIG.tiktokPersonalUrl);
+  }
+}
+function linkRow(iconSvg, bg, label, url){
+  if(isMetaUrl(url) && isBlockedInAppBrowser()){
+    const id = 'copyBtn' + Math.random().toString(36).slice(2,8);
+    return `
+      <a class="link-btn" href="javascript:void(0)" onclick="copyGenericLink('${url}','${id}')" id="${id}">
+        <div class="icon-circle" style="background:${bg};">${iconSvg}</div>
+        <span>${label} — ກົດເພື່ອຄັດລອກລິ້ງ (${detectAppName()} ບໍ່ໃຫ້ເປີດໂດຍກົງ)</span>
+      </a>`;
+  }
+  return `
+    <a class="link-btn" href="${url}" target="_blank" rel="noopener">
+      <div class="icon-circle" style="background:${bg};">${iconSvg}</div>
+      <span>${label}</span>
+    </a>`;
+}
+// v1.05: TikTok blocks facebook.com/instagram.com links too (same Meta-vs-TikTok restriction
+// as wa.me) — same fix pattern as WhatsApp: copy the link instead of hitting the dead end.
+function isMetaUrl(url){
+  return /facebook\.com|instagram\.com/i.test(url);
+}
+function copyGenericLink(url, btnId){
+  const done = () => {
+    const btn = document.getElementById(btnId);
+    if(btn) btn.querySelector('span').textContent = '✅ ຄັດລອກລິ້ງແລ້ວ! ເປີດ browser ແລ້ວວາງ';
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(done).catch(()=>fallbackCopy(url, done));
+  } else {
+    fallbackCopy(url, done);
+  }
+}
+
+loadConfigAndRender();
+</script>
+</body>
+</html>

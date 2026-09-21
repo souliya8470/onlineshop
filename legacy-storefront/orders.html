@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ກວດອໍເດີ - ຮ້ານຕຸກຕາສີໄຄ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!--
+  APP_VERSION: 1.02 (ກວດອໍເດີ/ປະຫວັດການສັ່ງຊື້ - real-time)
+  APP_VERSION_PREV: 1.01
+  APP_VERSION_PREV_OLDER: 1.00
+  ປະຫວັດ:
+  - v1.00 (2026-09-13): ສ້າງໃໝ່. ຄົ້ນຫາອໍເດີດ້ວຍເບີໂທ (ບໍ່ມີ login, ເບີໂທເປັນກະແຈຄົ້ນຫາ — ຈຸດອ່ອນທີ່
+    ຮູ້ຢູ່: ໃຜຮູ້ເບີກໍ່ເບິ່ງໄດ້, ຍອມຮັບໄດ້ເພາະຍັງບໍ່ມີລະບົບ login ລູກຄ້າ). ສະຖານະການຈັດສົ່ງດຶງຈາກ
+    shipping_labels.status ໂດຍກົງ (ຕາຕະລາງດຽວກັນກັບທີ່ Marketing Studio ໃຊ້ຕອນສະແກນແພັກເຄື່ອງ) ແລະ
+    subscribe Supabase Realtime ໃຫ້ອັບເດດສະຖານະທັນທີຖ້າພະນັກງານສະແກນອັບເດດຕອນລູກຄ້າເປີດໜ້ານີ້ຄ້າງໄວ້.
+  - v1.01 (2026-09-13): ເພີ່ມປຸ່ມ ← ກັບໄປໜ້າຫຼັກ (links.html).
+  - v1.02 (2026-09-14): ແກ້ຄຳສະກົດ "ອອເດີ" → "ອໍເດີ" ທຸກບ່ອນໃນໜ້ານີ້.
+-->
+<style>
+  :root{
+    --theme:#2f6fed; --bg:#f4f5f7; --card:#ffffff; --text:#1a1d29; --muted:#6b7280;
+    --border:#e5e7eb; --danger:#e0245e; --ok:#16a34a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:'Noto Sans Lao','Segoe UI',sans-serif; background:var(--bg); color:var(--text);}
+  header{
+    background:var(--card); padding:16px 20px; display:flex; align-items:center; gap:10px;
+    border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10;
+  }
+  header h1{font-size:17px; margin:0; font-weight:700; color:var(--theme);}
+  main{max-width:520px; margin:0 auto; padding:16px;}
+  .search-card{background:var(--card); border-radius:14px; padding:18px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+  .search-card label{display:block; font-size:13px; font-weight:600; margin-bottom:6px;}
+  .search-row{display:flex; gap:8px;}
+  .search-row input{
+    flex:1; padding:11px 14px; border:1px solid var(--border); border-radius:10px; font-family:inherit; font-size:14px;
+  }
+  .search-row button{
+    padding:11px 20px; border:none; border-radius:10px; background:var(--theme); color:#fff;
+    font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+  }
+  .hint{font-size:12px; color:var(--muted); margin-top:8px;}
+  .order-card{background:var(--card); border-radius:14px; padding:18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+  .order-card .top-row{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
+  .order-no{font-weight:800; font-size:15px;}
+  .order-date{font-size:12px; color:var(--muted); margin-top:2px;}
+  .status-badge{
+    display:inline-block; padding:6px 12px; border-radius:20px; font-size:13px; font-weight:700;
+  }
+  .status-badge.pending{background:#fff7e6; color:#b8860b;}
+  .status-badge.confirmed{background:#e6f9ee; color:var(--ok);}
+  .status-badge.cancelled{background:#fdeaef; color:var(--danger);}
+  .status-badge.shipping{background:#e8f0fe; color:var(--theme);}
+  .items-list{margin:12px 0; font-size:13px; color:var(--text);}
+  .items-list .item-row{display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed var(--border);}
+  .total-row{display:flex; justify-content:space-between; font-weight:800; font-size:15px; margin-top:8px; padding-top:8px; border-top:1px solid var(--border);}
+  .track-timeline{margin-top:14px; padding-top:14px; border-top:1px solid var(--border);}
+  .track-step{display:flex; align-items:center; gap:10px; padding:6px 0; font-size:13px; color:var(--muted);}
+  .track-step.done{color:var(--text); font-weight:600;}
+  .track-step .dot{width:10px; height:10px; border-radius:50%; background:var(--border); flex-shrink:0;}
+  .track-step.done .dot{background:var(--ok);}
+  .track-step.current .dot{background:var(--theme); box-shadow:0 0 0 4px rgba(47,111,237,0.2);}
+  .empty-msg{text-align:center; padding:50px 20px; color:var(--muted);}
+  .loading-msg{text-align:center; padding:30px; color:var(--muted); font-size:14px;}
+  .courier-tag{font-size:12px; color:var(--muted); margin-top:4px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="links.html" style="text-decoration:none; font-size:20px; color:var(--text);">←</a>
+  <h1>📦 ກວດອໍເດີຂອງທ່ານ</h1>
+</header>
+
+<main>
+  <div class="search-card">
+    <label>ໃສ່ເບີໂທທີ່ໃຊ້ຕອນສັ່ງຊື້</label>
+    <div class="search-row">
+      <input type="tel" id="phoneInput" placeholder="020 xxxxxxx">
+      <button id="searchBtn">ຄົ້ນຫາ</button>
+    </div>
+    <div class="hint">ໃສ່ເບີໂທດຽວກັນກັບຕອນສັ່ງຊື້ຜ່ານເວັບໄຊ</div>
+  </div>
+
+  <div id="resultsArea"></div>
+</main>
+
+<script>
+const SUPABASE_URL = "https://mjbhgtjnxcflqzmcfnyv.supabase.co"; // v0.0.1 SaaS-fork ONLY (2026-09-21): swapped from real Sykhai Shop production project to isolated dev/test project
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qYmhndGpueGNmbHF6bWNmbnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NzgxNzUsImV4cCI6MjEwNTU1NDE3NX0.JUl2LxbzHCOOISIL9YJNjgJT23LN0jLmQhn4vojXtEA";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  global: { fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }) }
+});
+
+const SHIP_STATUS_LABELS = {
+  0: "📦 ກຳລັງກຽມສິນຄ້າ", 1: "✅ ຢືນຢັນອໍເດີແລ້ວ", 8: "📦 ກຳລັງແພັກເຄື່ອງ",
+  9: "🚚 ລໍລົດຂົນສົ່ງມາຮັບ", 7: "🧾 ສົ່ງບິນແລ້ວ", 2: "🚚 ກຳລັງຈັດສົ່ງ",
+  3: "🎉 ຈັດສົ່ງສຳເລັດແລ້ວ", 4: "💰 ຮັບເງິນປາຍທາງແລ້ວ", 5: "↩️ ຈັດສົ່ງບໍ່ສຳເລັດ",
+  6: "🚫 ຍົກເລີກແລ້ວ", 10: "↩️ ລູກຄ້າຄືນເຄື່ອງ"
+};
+// ລຳດັບຄວາມຄືບໜ້າປົກກະຕິ ໃຊ້ແຕ້ມ timeline (ບໍ່ນັບ 5/6/10 ເພາະເປັນທາງແຍກຜິດປົກກະຕິ)
+const NORMAL_FLOW = [0, 8, 9, 2, 3];
+
+let realtimeChannel = null;
+let currentLabelIds = [];
+
+function formatKip(n){ return Math.round(n).toLocaleString('en-US') + " ກີບ"; }
+function escapeHtml(s){ const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+async function searchOrders(){
+  const phoneRaw = document.getElementById('phoneInput').value.trim();
+  if(!phoneRaw){ alert('ກະລຸນາໃສ່ເບີໂທ'); return; }
+  const resultsArea = document.getElementById('resultsArea');
+  resultsArea.innerHTML = '<div class="loading-msg">ກຳລັງຄົ້ນຫາ...</div>';
+
+  // ອານຸໂລມ format ເບີໂທແບບຫຼວມໆ (ຄົ້ນຫາແບບ contains ໃຫ້ພິມແບບໃດກໍ່ພົບ)
+  const phoneDigits = phoneRaw.replace(/\D/g, '');
+
+  try{
+    const { data: orders, error } = await sb.from('online_orders')
+      .select('*')
+      .ilike('phone', `%${phoneDigits}%`)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if(error) throw error;
+
+    if(!orders || orders.length === 0){
+      resultsArea.innerHTML = '<div class="empty-msg">😕 ບໍ່ພົບອໍເດີສຳລັບເບີໂທນີ້</div>';
+      return;
+    }
+
+    const orderIds = orders.map(o => o.id);
+    const { data: items } = await sb.from('online_order_items').select('*').in('order_id', orderIds);
+
+    const labelIds = orders.map(o => o.shipping_label_id).filter(Boolean);
+    let labelsById = {};
+    if(labelIds.length > 0){
+      const { data: labels } = await sb.from('shipping_labels').select('id, status, courier_name, label_number').in('id', labelIds);
+      (labels || []).forEach(l => { labelsById[l.id] = l; });
+    }
+
+    renderOrders(orders, items || [], labelsById);
+    subscribeRealtime(labelIds);
+  }catch(err){
+    console.error('searchOrders error:', err);
+    resultsArea.innerHTML = '<div class="empty-msg">⚠️ ຄົ້ນຫາບໍ່ສຳເລັດ, ລອງໃໝ່ພາຍຫຼັງ</div>';
+  }
+}
+
+function renderOrders(orders, items, labelsById){
+  const resultsArea = document.getElementById('resultsArea');
+  resultsArea.innerHTML = orders.map(o => renderOrderCard(o, items.filter(i => i.order_id === o.id), labelsById[o.shipping_label_id])).join('');
+}
+
+function renderOrderCard(o, orderItems, label){
+  let badgeHtml, trackHtml = '';
+
+  if(o.status === 'cancelled'){
+    badgeHtml = `<span class="status-badge cancelled">❌ ຖືກປະຕິເສດ</span>`;
+    if(o.cancel_reason){
+      trackHtml = `<div class="hint" style="margin-top:8px;">ເຫດຜົນ: ${escapeHtml(o.cancel_reason)}</div>`;
+    }
+  } else if(o.status === 'pending_review'){
+    badgeHtml = `<span class="status-badge pending">⏳ ກຳລັງກວດສະລິບການໂອນເງິນ</span>`;
+  } else if(o.status === 'confirmed'){
+    const shipStatus = label ? label.status : 0;
+    const label_text = SHIP_STATUS_LABELS[shipStatus] || "✅ ຢືນຢັນອໍເດີແລ້ວ";
+    const isProblem = [5,6,10].includes(shipStatus);
+    badgeHtml = `<span class="status-badge ${isProblem ? 'cancelled' : 'shipping'}">${label_text}</span>`;
+    if(!isProblem){
+      trackHtml = `<div class="track-timeline" id="track-${o.shipping_label_id}">${renderTimeline(shipStatus)}</div>`;
+    }
+    if(label && label.courier_name){
+      trackHtml += `<div class="courier-tag">🚚 ຂົນສົ່ງໂດຍ: ${escapeHtml(label.courier_name)}${label.label_number ? ' (' + escapeHtml(label.label_number) + ')' : ''}</div>`;
+    }
+  } else {
+    badgeHtml = `<span class="status-badge pending">${escapeHtml(o.status)}</span>`;
+  }
+
+  const itemsHtml = orderItems.map(i => `
+    <div class="item-row"><span>${escapeHtml(i.product_name)} × ${fmtQty(i.qty)}</span><span>${formatKip(i.line_total_kip)}</span></div>
+  `).join('');
+
+  return `
+    <div class="order-card" data-order-id="${escapeHtml(o.id)}" data-label-id="${escapeHtml(o.shipping_label_id || '')}">
+      <div class="top-row">
+        <div>
+          <div class="order-no">${escapeHtml(o.order_no)}</div>
+          <div class="order-date">${formatDate(o.created_at)}</div>
+        </div>
+        ${badgeHtml}
+      </div>
+      <div class="items-list">${itemsHtml}</div>
+      <div class="total-row"><span>ລວມ</span><span>${formatKip(o.total_kip)}</span></div>
+      ${trackHtml}
+    </div>
+  `;
+}
+
+function fmtQty(q){
+  const n = Number(q);
+  return Number.isInteger(n) ? n : n.toFixed(1);
+}
+function formatDate(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleDateString('lo-LA', { year:'numeric', month:'short', day:'numeric' }) + ' ' + d.toLocaleTimeString('lo-LA', {hour:'2-digit', minute:'2-digit'});
+  }catch(e){ return iso; }
+}
+function renderTimeline(currentStatus){
+  const idx = NORMAL_FLOW.indexOf(currentStatus);
+  return NORMAL_FLOW.map((s, i) => {
+    const done = idx >= 0 && i <= idx;
+    const isCurrent = i === idx;
+    return `<div class="track-step ${done ? 'done' : ''} ${isCurrent ? 'current' : ''}"><span class="dot"></span><span>${SHIP_STATUS_LABELS[s]}</span></div>`;
+  }).join('');
+}
+
+// v1.00: subscribe ຕໍ່ shipping_labels changes ສະເພາະ label ທີ່ກຳລັງສະແດງຢູ່ ໃຫ້ອັບເດດ badge/timeline
+// ທັນທີຖ້າພະນັກງານສະແກນອັບເດດສະຖານະ ໃນຂະນະທີ່ລູກຄ້າເປີດໜ້ານີ້ຄ້າງໄວ້ — ບໍ່ໃຊ້ setInterval/polling
+function subscribeRealtime(labelIds){
+  if(realtimeChannel){ sb.removeChannel(realtimeChannel); realtimeChannel = null; }
+  if(!labelIds || labelIds.length === 0) return;
+  currentLabelIds = labelIds;
+
+  realtimeChannel = sb.channel('order-status-tracking')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'shipping_labels' }, (payload) => {
+      if(!currentLabelIds.includes(payload.new.id)) return;
+      updateCardStatus(payload.new);
+    })
+    .subscribe();
+}
+function updateCardStatus(label){
+  const card = document.querySelector(`[data-label-id="${label.id}"]`);
+  if(!card) return;
+  const badge = card.querySelector('.status-badge');
+  const isProblem = [5,6,10].includes(label.status);
+  if(badge){
+    badge.textContent = SHIP_STATUS_LABELS[label.status] || badge.textContent;
+    badge.className = 'status-badge ' + (isProblem ? 'cancelled' : 'shipping');
+  }
+  const track = document.getElementById('track-' + label.id);
+  if(track && !isProblem){
+    track.innerHTML = renderTimeline(label.status);
+  }
+}
+
+document.getElementById('searchBtn').addEventListener('click', searchOrders);
+document.getElementById('phoneInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') searchOrders(); });
+</script>
+</body>
+</html>
