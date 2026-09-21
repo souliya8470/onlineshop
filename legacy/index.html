@@ -974,8 +974,17 @@ window.addEventListener("unhandledrejection", function(e){
   if(root) root.innerHTML = `<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:30px; background:#1a1a1a; color:#fff; font-family:monospace; font-size:13px; text-align:left; white-space:pre-wrap;">ເກີດຂໍ້ຜິດພາດ (Promise):\n\n${(e.reason && e.reason.message) || e.reason}</div>`;
 });
 </script>
-<script>
+<script type="module">
 /* ====================== SUPABASE CONFIG ====================== */
+// v0.0.1 SaaS-fork ONLY change (2026-09-21): this tag was plain <script>, now type="module" so
+// this file can start importing from src/shared/*.js instead of keeping duplicate copies of the
+// same functions. This ONE line is the only change in this file this round -- nothing else below
+// is touched yet. Needs real browser testing (open DevTools console, look for red errors) before
+// any function is actually removed/imported, because switching to a module changes rules for the
+// WHOLE script at once: strict mode is forced on, and top-level function/var declarations no
+// longer become implicit window.* globals (this file already uses explicit window.foo=... where
+// it needs that, and wires events with addEventListener rather than inline onclick="", so this is
+// believed low-risk -- but "believed" is not "confirmed", hence the ask to test before going further.
 // Bump this string every time a new build is shipped to Tar. Shown in the
 // sidebar footer + login page so it's trivial to confirm GitHub Pages is
 // actually serving the latest upload (vs. an old cached copy).
