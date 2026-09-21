@@ -17,7 +17,11 @@
 
 ວຽກເກົ່າອີງ Marketing Studio ຢຸດພັກໄວ້ຊົ່ວຄາວ (ບໍ່ລຶບ — ຍ້າຍໄປ `legacy-marketing-studio/`, ຍັງເກັບໄວ້ໃນ git history ທັງໝົດ, ເອົາມາໃຊ້ຄືນພາຍຫຼັງໄດ້ຖ້າຕ້ອງການ).
 
-**ວັດຖຸດິບຄົບແລ້ວ (2026-09-21):** ໄດ້ຮັບໄຟລ໌ຕົ້ນສະບັບໜ້າຮ້ານອອນລາຍ (index/links/store/checkout/orders/chat.html) ຈາກ Tar ແລ້ວ — ເກັບໄວ້ໃນ `legacy-storefront/`. ຂັ້ນຕໍ່ໄປ: ວາງແຜນໂຄງສ້າງໂຟນເດີ້ໃໝ່ (ຮ່ວມ POS+ໜ້າຮ້ານ) ໃຫ້ Tar ຢືນຢັນກ່ອນລົງມືແຍກໂມດູນແທ້.
+**ວັດຖຸດິບຄົບແລ້ວ (2026-09-21):** ໄດ້ຮັບໄຟລ໌ຕົ້ນສະບັບໜ້າຮ້ານອອນລາຍ (index/links/store/checkout/orders/chat.html) ຈາກ Tar ແລ້ວ — ເກັບໄວ້ໃນ `legacy-storefront/`.
+
+**ຂັ້ນຕອນທຳອິດ — ປ່ຽນເປັນ ES module (2026-09-21):** ທັງ 5 ໄຟລ໌ໃນ `legacy-storefront/` ປ່ຽນ `<script>` → `<script type="module">` ແລ້ວ (ລາຍລະອຽດ: `legacy-storefront/README.md`). ອັບເດດ `vite.config.js` ໃຫ້ຮັບໃຊ້ຈາກ repo root ແລ້ວ (ບໍ່ໄດ້ຊີ້ໃສ່ໂຟນເດີ້ດຽວອີກຕໍ່ໄປ) — ທົດສອບໄດ້ທັງ 3 ລະບົບເກົ່າ (Marketing Studio, POS, ໜ້າຮ້ານອອນລາຍ) ພ້ອມກັນຜ່ານ `npm run dev` ດຽວ, ແຕ່ລະລະບົບເປີດຜ່ານທາງ URL ຂອງຕົນເອງ. ເພີ່ມ `index.html` ໃໝ່ຢູ່ root (ໜ້າລິ້ງລວມສຳລັບພັດທະນາເທົ່ານັ້ນ, ບໍ່ແມ່ນລະບົບຈິງ). ທົດສອບແລ້ວ: `npm run build` ຜ່ານ 0 error, ທຸກໜ້າ (9 ໜ້າ) ໄດ້ HTTP 200 ຜ່ານ `npm run dev`.
+
+**ຂັ້ນຕໍ່ໄປ:** ວາງແຜນໂຄງສ້າງໂຟນເດີ້ `src/` ໃໝ່ (ຮ່ວມ POS+ໜ້າຮ້ານ) ໃຫ້ Tar ຢືນຢັນ ແລ້ວເລີ່ມແຍກໂຄດຮ່ວມອອກ (shop-config, cart) ອອກຈາກແຕ່ລະໄຟລ໌ເທື່ອລະໜ້ອຍ.
 
 ### ⚠️ ພົບ+ແກ້ບັນຫາຄວາມປອດໄພ (2026-09-21)
 
@@ -32,17 +36,18 @@ npm install
 npm run dev
 ```
 
-ຈະເປີດເວັບຢູ່ `http://localhost:5173` — **ຊົ່ວຄາວຍັງເປັນ Marketing Studio ເກົ່າ** (`legacy-marketing-studio/index.html`) ຢູ່, ຈົນກວ່າຈະໄດ້ໄຟລ໌ຕົ້ນສະບັບ POS/ໜ້າຮ້ານ ແລ້ວວາງໂຄງສ້າງໃໝ່.
+ຈະເປີດເວັບຢູ່ `http://localhost:5173` — ໜ້າທຳອິດແມ່ນລິ້ງລວມໄປຫາທັງ 3 ລະບົບເກົ່າ (Marketing Studio ⏸, POS, ໜ້າຮ້ານອອນລາຍ), ກົດເລືອກລະບົບທີ່ຕ້ອງການທົດສອບໄດ້ເລີຍ.
 
 ## ໂຄງສ້າງໂຟນເດີ້ (ປັດຈຸບັນ, ລະຫວ່າງປ່ຽນທິດທາງ)
 
 ```
+index.html                 ໜ້າລິ້ງລວມສຳລັບພັດທະນາ/ທົດສອບເທົ່ານັ້ນ (ບໍ່ແມ່ນລະບົບຈິງ)
 src/shared/               ຝັງຊັນລວມ — ອີງ Marketing Studio ເດີມ, ຕ້ອງທົບທວນຄືນ (ໂຄງສ້າງໃໝ່ຍັງບໍ່ວາງແຜນ)
-legacy-marketing-studio/  ໂຄດ Marketing Studio ເກົ່າ (v7.81) — ⏸ ຢຸດພັກ, Vite ຍັງຮັບໃຊ້ໄຟລ໌ນີ້ຊົ່ວຄາວ
+legacy-marketing-studio/  ໂຄດ Marketing Studio ເກົ່າ (v7.81) — ⏸ ຢຸດພັກ
 legacy-pos/                ໂຄດ POS ຕົ້ນສະບັບ (v2.39, ຈາກ souliya8470/sykhai-pos) — ຄັດລອກ+ແກ້ Supabase URL, ຍັງບໍ່ໄດ້ຕໍ່ Vite
-legacy-storefront/         ໂຄດໜ້າຮ້ານອອນລາຍຕົ້ນສະບັບ (index/links/store/checkout/orders/chat.html) — ຄັດລອກ+ແກ້ Supabase URL, ຍັງບໍ່ໄດ້ຕໍ່ Vite
+legacy-storefront/         ໂຄດໜ້າຮ້ານອອນລາຍຕົ້ນສະບັບ (index/links/store/checkout/orders/chat.html) — ຄັດລອກ+ແກ້ Supabase URL, ປ່ຽນເປັນ ES module ແລ້ວ
 package.json               Vite + npm scripts (dev/build/preview)
-vite.config.js              ຕັ້ງ Vite (ຊົ່ວຄາວຍັງຊີ້ໃສ່ legacy-marketing-studio/)
+vite.config.js              ຕັ້ງ Vite (ຮັບໃຊ້ຈາກ repo root, ທົດສອບໄດ້ທັງ 3 ລະບົບພ້ອມກັນ)
 ```
 
 ໂຄງສ້າງ `src/` ໃໝ່ (ໂມດູນຕາມ POS + ໜ້າຮ້ານ) — ວັດຖຸດິບຄົບແລ້ວ, ກຳລັງວາງແຜນ, ຈະນຳສະເໜີໃຫ້ Tar ຢືນຢັນກ່ອນລົງມືແຍກໂມດູນແທ້.

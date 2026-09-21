@@ -88,7 +88,9 @@
   <div id="resultsArea"></div>
 </main>
 
-<script>
+<script type="module">
+// v0.0.1 SaaS-fork ONLY (2026-09-21): ປ່ຽນເປັນ ES module (type="module") ເພື່ອກຽມແຍກໂຄດອອກເປັນໄຟລ໌ນ້ອຍໆພາຍຫຼັງ (import/export) —
+// ໄຟລ໌ນີ້ກວດແລ້ວ ບໍ່ມີ inline onclick="..." ຫຼືອື່ນໆທີ່ອີງໃສ່ global function, ຈຶ່ງປ່ຽນໄດ້ໂດຍບໍ່ຕ້ອງເພີ່ມ window.foo=foo
 const SUPABASE_URL = "https://mjbhgtjnxcflqzmcfnyv.supabase.co"; // v0.0.1 SaaS-fork ONLY (2026-09-21): swapped from real Sykhai Shop production project to isolated dev/test project
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qYmhndGpueGNmbHF6bWNmbnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NzgxNzUsImV4cCI6MjEwNTU1NDE3NX0.JUl2LxbzHCOOISIL9YJNjgJT23LN0jLmQhn4vojXtEA";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {

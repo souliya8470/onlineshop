@@ -146,7 +146,14 @@
   <footer id="footerEl"></footer>
 </div>
 
-<script>
+<script type="module">
+/* v0.0.1 SaaS-fork ONLY (2026-09-21): this tag was plain <script>, now type="module" -- first
+   step towards importing shared code (src/shared/, src/storefront/) instead of duplicating it
+   across all 5 storefront pages. This page's two inline onclick="..." handlers (copyWaNumber,
+   copyGenericLink) have been given explicit window.foo=foo exposure above so they keep working
+   under module rules (see the comments there). No other window.* usage in this file, no
+   with()/eval()/bare-delete found in a static scan. Needs real browser testing before going
+   further. */
 const SUPABASE_URL = "https://mjbhgtjnxcflqzmcfnyv.supabase.co"; // v0.0.1 SaaS-fork ONLY (2026-09-21): swapped from real Sykhai Shop production project to isolated dev/test project
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qYmhndGpueGNmbHF6bWNmbnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NzgxNzUsImV4cCI6MjEwNTU1NDE3NX0.JUl2LxbzHCOOISIL9YJNjgJT23LN0jLmQhn4vojXtEA";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
@@ -194,6 +201,12 @@ function copyWaNumber(number){
     fallbackCopy(text, done);
   }
 }
+// v0.0.1 SaaS-fork ONLY (2026-09-21): explicit window exposure needed because this page uses
+// inline onclick="..." HTML attributes to call these functions -- inline onclick only finds
+// functions on the global (window) object, and switching this script to type="module" below
+// stops top-level function declarations from becoming implicit window.* globals like a classic
+// script does. Without this line, clicking the button would throw "copyWaNumber is not defined".
+window.copyWaNumber = copyWaNumber;
 function fallbackCopy(text, done){
   const ta = document.createElement('textarea');
   ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -329,6 +342,8 @@ function copyGenericLink(url, btnId){
     fallbackCopy(url, done);
   }
 }
+// v0.0.1 SaaS-fork ONLY (2026-09-21): see copyWaNumber comment above -- same reason.
+window.copyGenericLink = copyGenericLink;
 
 loadConfigAndRender();
 </script>

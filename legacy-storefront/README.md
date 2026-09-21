@@ -15,3 +15,12 @@
 **⚠️ ແກ້ໄຂຄວາມປອດໄພກ່ອນເອົາເຂົ້າ repo (2026-09-21):** ໄຟລ໌ຕົ້ນສະບັບທັງ 5 ໄຟລ໌ (ຍົກເວັ້ນ `index.html`) ຜູກຢູ່ກັບ **project Supabase ຈິງຂອງ Sykhai Shop** (`swrijpkkufarddsyqhrh`) — ຄືກັນກັບທີ່ພົບໃນ `legacy-marketing-studio/` ແລະ `legacy-pos/`. ໄດ້ປ່ຽນທັງ 5 ໄຟລ໌ໃຫ້ຊີ້ໃສ່ project ພັດທະນາ/ທົດສອບ (`mjbhgtjnxcflqzmcfnyv`, ບັນຊີແຍກຕ່າງຫາກ) ກ່ອນເອົາເຂົ້າ repo ນີ້ — ບໍ່ມີຄວາມສ່ຽງໃດໆຕໍ່ຂໍ້ມູນຈິງ.
 
 **ສະຖານະ:** ຄັດລອກ+ແກ້ Supabase URL ເທົ່ານັ້ນ — ຍັງບໍ່ໄດ້ຕໍ່ Vite, ຍັງບໍ່ໄດ້ວາງແຜນແຍກໂມດູນ. ໄຟລ໌ພວກນີ້ແຕກຕ່າງຈາກ Marketing Studio/POS ຢ່າງໜຶ່ງ: ມັນແຍກເປັນຫຼາຍໄຟລ໌ນ້ອຍໆຢູ່ແລ້ວ (255-791 ແຖວຕໍ່ໄຟລ໌) ບໍ່ແມ່ນໄຟລ໌ດຽວໃຫຍ່ໆ — ອາດຈະບໍ່ຈຳເປັນຕ້ອງແຍກໂມດູນຫຼາຍເທົ່າ Marketing Studio/POS.
+
+### ⚙️ ປ່ຽນເປັນ ES module (2026-09-21)
+
+ທັງ 5 ໄຟລ໌ (ຍົກເວັ້ນ `index.html` ທີ່ບໍ່ມີ script) ປ່ຽນ `<script>` → `<script type="module">` ແລ້ວ (ຂັ້ນຕອນທຳອິດ ກ່ອນຈະແຍກໂຄດອອກເປັນໄຟລ໌ນ້ອຍໆ import/export ໄດ້ຈິງ):
+
+- **`links.html`**, **`checkout.html`**: ມີ inline `onclick="ຊື່ຟັງຊັນ()"` ອ້າງອີງຟັງຊັນພາຍໃນໄຟລ໌ (ເຊັ່ນ `copyWaNumber`, `changeQty`, `submitOrder`) — ເພີ່ມ `window.ຊື່ຟັງຊັນ = ຊື່ຟັງຊັນ;` ຫຼັງນິຍາມແຕ່ລະຟັງຊັນ ກ່ອນປ່ຽນ script ເປັນ module (ຖ້າບໍ່ເຮັດແບບນີ້ ປຸ່ມຈະກົດແລ້ວ error "X is not defined"). `checkout.html` ຍັງມີ script ທີສອງ (QRCode library, minified) ທີ່ **ເຈດຕະນາປະໄວ້ເປັນ script ທຳມະດາ** (ບໍ່ປ່ຽນເປັນ module) ເພາະຕ້ອງໂຫຼດກ່ອນ ແລະ script ຫຼັກຕ້ອງອ່ານ global `QRCode` ຂອງມັນໄດ້.
+- **`store.html`**, **`orders.html`**, **`chat.html`**: ກວດແລ້ວປອດໄພ (ບໍ່ມີ onclick ອ້າງອີງຟັງຊັນພາຍໃນ) — ປ່ຽນເປັນ module ໄດ້ເລີຍ ບໍ່ຕ້ອງແກ້ຫຍັງເພີ່ມ.
+
+ທົດສອບແລ້ວ: `npm run build` ຜ່ານ 0 error, ທຸກໜ້າເປີດຜ່ານ `npm run dev` ໄດ້ HTTP 200, ບໍ່ມີ URL Supabase ຈິງຫຼົງເຫຼືອ.

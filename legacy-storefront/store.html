@@ -142,7 +142,13 @@
   </div>
 </div>
 
-<script>
+<script type="module">
+/* v0.0.1 SaaS-fork ONLY (2026-09-21): this tag was plain <script>, now type="module" -- first
+   step towards importing shared code (src/shared/, src/storefront/) instead of duplicating it
+   across all 5 storefront pages. Static scan found no inline onclick="..." calling a function
+   defined in this script (the two onerror="..." attributes are self-contained inline expressions,
+   not function references, so they're unaffected either way), and no with()/eval()/bare-delete.
+   Needs real browser testing before going further. */
 const SUPABASE_URL = "https://mjbhgtjnxcflqzmcfnyv.supabase.co"; // v0.0.1 SaaS-fork ONLY (2026-09-21): swapped from real Sykhai Shop production project to isolated dev/test project
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qYmhndGpueGNmbHF6bWNmbnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NzgxNzUsImV4cCI6MjEwNTU1NDE3NX0.JUl2LxbzHCOOISIL9YJNjgJT23LN0jLmQhn4vojXtEA";
 const SHOP_ID = "584156a3-cf33-4f1a-be2a-b24346631674";

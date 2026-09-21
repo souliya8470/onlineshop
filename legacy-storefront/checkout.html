@@ -320,7 +320,16 @@ Minimum version required to store current data is: `+i+`.
 
 </main>
 
-<script>
+<script type="module">
+/* v0.0.1 SaaS-fork ONLY (2026-09-21): this tag was plain <script>, now type="module" -- the
+   OTHER inline <script> above (the vendored QRCode library, "var QRCode=...") stays a plain
+   classic script deliberately: it's a third-party minified bundle, converting it is unnecessary
+   risk, and it must run BEFORE this one so its "var QRCode" becomes a window.* global that this
+   module can still read (a classic script's top-level var always does that, module rules only
+   change what THIS script's own top-level declarations do). This page's 3 inline onclick="..."
+   handlers (changeQty, removeItem, submitOrder) have explicit window.foo=foo exposure next to
+   each definition below (see those comments). Needs real browser testing before going further --
+   this page has the most logic of the 5 storefront pages (cart, QR payment, slip upload). */
 // ============ ຄ່າຕັ້ງຄ່າຫຼັກ ============
 const SUPABASE_URL = "https://mjbhgtjnxcflqzmcfnyv.supabase.co"; // v0.0.1 SaaS-fork ONLY (2026-09-21): swapped from real Sykhai Shop production project to isolated dev/test project
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qYmhndGpueGNmbHF6bWNmbnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NzgxNzUsImV4cCI6MjEwNTU1NDE3NX0.JUl2LxbzHCOOISIL9YJNjgJT23LN0jLmQhn4vojXtEA";
@@ -607,6 +616,13 @@ function changeQty(idx, delta){
   saveCart(cart);
   renderCart();
 }
+// v0.0.1 SaaS-fork ONLY (2026-09-21): explicit window exposure needed because this page uses
+// inline onclick="..." HTML attributes to call changeQty/removeItem/submitOrder -- inline
+// onclick only finds functions on the global (window) object, and switching this script to
+// type="module" below stops top-level function declarations from becoming implicit window.*
+// globals like a classic script does. Without these lines, clicking would throw "X is not
+// defined". (submitOrder's own window.submitOrder=submitOrder line is further down, next to it.)
+window.changeQty = changeQty;
 function removeItem(idx){
   cart.splice(idx, 1);
   saveCart(cart);
@@ -617,6 +633,7 @@ function removeItem(idx){
     renderCart();
   }
 }
+window.removeItem = removeItem;
 
 // ============ ອັບໂຫລດຮູບສະລິບ (ບີບອັດຂະໜາດກ່ອນ) ============
 function handleSlipSelect(e){
@@ -784,6 +801,7 @@ async function submitOrder(){
     isSubmittingOrder = false;
   }
 }
+window.submitOrder = submitOrder;
 
 init();
 </script>
