@@ -6,6 +6,15 @@
 
 ແຜນພັດທະນາລະອຽດ (ຫຼັກການອອກແບບ, ໂຄງສ້າງໂຄດ, ການອອກແບບຖານຂໍ້ມູນ multi-tenant+RLS, ຂັ້ນຕອນ 6 ເຟດ, ຄວາມສ່ຽງ): ເບິ່ງ [ແຜນພັດທະນາລະບົບ SaaS ຫຼາຍຮ້ານ](https://claude.ai/artifact/ApQDeFuq6QzZ41xmqDTUJX)
 
+## ວິທີເປີດທົດສອບ (ຫຼັງມີ Node.js ຕິດຕັ້ງໃນເຄື່ອງ)
+
+```
+npm install
+npm run dev
+```
+
+ຈະເປີດເວັບຢູ່ `http://localhost:5173` — ຕອນນີ້ຄືການເປີດ `legacy/index.html` ຊື່ໆ (ຍັງບໍ່ໄດ້ແຍກໂມດູນ) ຜ່ານ Vite.
+
 ## ໂຄງສ້າງໂຟນເດີ້
 
 ```
@@ -19,14 +28,16 @@ src/
   shop-settings/    ຕັ້ງຄ່າສະເພາະຮ້ານ (ໃໝ່ທັງໝົດ)
   shared/           ຝັງຊັນລວມ (Supabase client, format, UI components)
 legacy/
-  index.html        ໂຄດ Marketing Studio ເກົ່າ (2.7MB, v7.37) — ຈຸດເລີ່ມຕົ້ນ, ຍັງບໍ່ໄດ້ແກ້ໄຂ
+  index.html        ໂຄດ Marketing Studio ເກົ່າ (v7.81) — Vite ຮັບໃຊ້ໄຟລ໌ນີ້ຊື່ໆຢູ່ຕອນນີ້
   sw.js             Service Worker ເກົ່າ
+package.json        Vite + npm scripts (dev/build/preview)
+vite.config.js       ຕັ້ງ Vite ໃຫ້ຮັບໃຊ້ legacy/index.html
 ```
 
 ## ສະຖານະ
 
 - [x] **ເຟດ 1 — ຕັ້ງໂຄງລ່າງ**: git repo ໃໝ່, ໂຄງສ້າງໂຟນເດີ້, ຄັດລອກໂຄດເກົ່າເຂົ້າມາ
-- [ ] **ເຟດ 2 — ແຍກໂມດູນ**: ຕັດ index.html ອອກເປັນໄຟລ໌ຕາມໂມດູນ, ຕັ້ງ build tool (Vite)
+- [~] **ເຟດ 2 — ແຍກໂມດູນ**: ຕັ້ງ Vite ແລ້ວ (ຮັບໃຊ້ legacy/index.html ຊື່ໆ, ທົດສອບແລ້ວວ່າຄືເກົ່າ 100%) — ຍັງບໍ່ທັນແຍກ index.html ອອກເປັນໄຟລ໌ຕາມໂມດູນ (ຈະເຮັດເທື່ອລະໜ່ວຍ ພ້ອມທົດສອບທຸກຮອບ ເພື່ອຄວາມສ່ຽງໜ້ອຍສຸດ)
 - [ ] **ເຟດ 3 — ເຮັດເປັນ multi-tenant**: ຕາຕະລາງ shops/shop_settings, RLS ທຸກຕາຕະລາງ
 - [ ] **ເຟດ 4 — ໜ້າສະໝັກ/ຕັ້ງຄ່າຮ້ານໃໝ່**: onboarding wizard
 - [ ] **ເຟດ 5 — ທົດສອບ**: ຂໍ້ມູນຈຳລອງຫຼາຍຮ້ານ, ກວດ RLS
@@ -37,3 +48,7 @@ legacy/
 ໃຊ້ Supabase project free-tier ຊົ່ວຄາວ (ບັນຊີແຍກຕ່າງຫາກ, ອົງກອນ `chandom`, region Singapore) ສຳລັບເຟດ 1-5 — **ບໍ່ແມ່ນ ແລະບໍ່ກ່ຽວຂ້ອງກັບ project ຂອງ Sykhai Shop ຈິງເລີຍ**. ຄ່າ URL + anon key ຢູ່ໃນ `src/shared/supabase-client.js`.
 
 ຕອນເຟດ 6 (ອອກສູ່ຈິງ) ຈະສ້າງ project ຈິງໃນອົງກອນ Toukta Shop (Pro) ແລ້ວປ່ຽນ 2 ຄ່ານີ້, ພ້ອມຍ້າຍ schema+ຂໍ້ມູນ.
+
+## ໝາຍເຫດ: minify ຕອນ build
+
+`npm run build` (production) ຈະ minify ໂຄດ ແລະ **ລຶບ comment ທັງໝົດ** (ລວມທັງ comment ປະຫວັດ APP_VERSION) — ອັນນີ້ປົກກະຕິສຳລັບ production build ແຕ່ຍັງບໍ່ໄດ້ຕັ້ງຄ່າໃຫ້ຮັກສາ comment ໄວ້. ຈະແກ້ກ່ອນອອກສູ່ຈິງແທ້ (ເຟດ 6). ຕອນນີ້ໃຊ້ `npm run dev` ສຳລັບພັດທະນາ/ທົດສອບ (ບໍ່ minify, ຄືໄຟລ໌ເດີມ 100%).
