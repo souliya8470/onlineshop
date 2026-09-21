@@ -34,4 +34,6 @@ legacy/
 
 ## ສະພາບແວດລ້ອມພັດທະນາ
 
-ຍັງບໍ່ໄດ້ສ້າງ Supabase project ຈິງ — ໃຊ້ Supabase local (CLI) ຫຼື project free-tier ຊົ່ວຄາວ ສຳລັບເຟດ 1-5 (ລໍຖ້າຢືນຍັນຈາກ Tar ວ່າຈະໃຊ້ອັນໃດ).
+ໃຊ້ Supabase project free-tier ຊົ່ວຄາວ (ບັນຊີແຍກຕ່າງຫາກ, ອົງກອນ `chandom`, region Singapore) ສຳລັບເຟດ 1-5 — **ບໍ່ແມ່ນ ແລະບໍ່ກ່ຽວຂ້ອງກັບ project ຂອງ Sykhai Shop ຈິງເລີຍ**. ຄ່າ URL + anon key ຢູ່ໃນ `src/shared/supabase-client.js`.
+
+ຕອນເຟດ 6 (ອອກສູ່ຈິງ) ຈະສ້າງ project ຈິງໃນອົງກອນ Toukta Shop (Pro) ແລ້ວປ່ຽນ 2 ຄ່ານີ້, ພ້ອມຍ້າຍ schema+ຂໍ້ມູນ.
