@@ -217,6 +217,8 @@ Minimum version required to store current data is: `+i+`.
 </style>
 </head>
 <body>
+<!-- v0.0.1 SaaS-fork ONLY (2026-09-24): ແຖບແຈ້ງເຕືອນເວີຊັນທົດລອງ — ລຶບອອກກ່ອນອອກສູ່ຈິງ (ເຟດ 6) -->
+<div style="background:#fff3cd;color:#664d03;font-size:12px;text-align:center;padding:6px 12px;line-height:1.5;">🧪 ນີ້ແມ່ນເວີຊັນທົດລອງ — ຂໍຄຳຄິດເຫັນ/ລາຍງານບັນຫາໄດ້ທີ່ຮ້ານ</div>
 
 <header>
   <img id="shopLogo" src="" alt="" style="display:none;">
@@ -286,7 +288,10 @@ Minimum version required to store current data is: `+i+`.
 
       <div class="qr-box" id="qrBox">
         <canvas id="qrCanvas" style="display:none;"></canvas>
-        <div class="qr-missing" id="qrMissingMsg">ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ QR BCEL ຂອງຮ້ານ<br>(Tar: ໃສ່ຄ່າໃນ pos_shops.bcel_qr_payload)</div>
+        <!-- v0.0.1 SaaS-fork ONLY (2026-09-24): ຂໍ້ຄວາມນີ້ແຕ່ເດີມອ້າງອີງຊື່ Tar ແລະຊື່ column ຖານຂໍ້ມູນ
+             ໂດຍກົງ (ເໝາະສຳລັບພະນັກງານ, ບໍ່ເໝາະໃຫ້ລູກຄ້າຈິງເຫັນ) — ປ່ຽນເປັນຂໍ້ຄວາມທົ່ວໄປແທນ ເພາະຮອບນີ້
+             ຈະໃຫ້ລູກຄ້າຈິງທົດລອງ (dev DB ບໍ່ໄດ້ໃສ່ QR ຈິງໄວ້ໂດຍເຈດຕະນາ ເພື່ອກັນສະແກນຈ່າຍເງິນຈິງເຂົ້າຜິດບັນຊີ) -->
+        <div class="qr-missing" id="qrMissingMsg">🧪 ນີ້ແມ່ນເວີຊັນທົດລອງ — ຍັງບໍ່ເປີດຮັບຊຳລະເງິນຈິງ<br>ອັບໂຫຼດຮູບໃດກໍໄດ້ດ້ານລຸ່ມ ເພື່ອທົດລອງຂັ້ນຕອນສັ່ງຊື້ຕໍ່ໄດ້ເລີຍ</div>
         <div id="qrDownloadWrap" style="display:none; margin-top:10px;">
           <button type="button" id="downloadQrBtn" style="background:#fff; border:1px solid var(--border); border-radius:20px; padding:8px 18px; font-size:13px; font-weight:700; color:var(--theme); cursor:pointer; font-family:inherit;">⬇️ ດາວໂຫລດ QR</button>
         </div>
